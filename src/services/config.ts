@@ -2,7 +2,6 @@ import { DomainConfig, StyleVariant } from "../types";
 
 const DEFAULT_CONFIG: DomainConfig = {
   style: "minimalist",
-  enabled: true,
 };
 
 const VALID_STYLES: StyleVariant[] = ["minimalist", "modern", "playful"];

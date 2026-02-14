@@ -1,6 +1,8 @@
 import { program } from "commander";
 import * as fs from "fs";
-import { execSync } from "child_process";
+import * as os from "os";
+import * as path from "path";
+import { execFileSync } from "child_process";
 
 program
   .requiredOption("--file <path>", "Path to image file (JPEG)")
@@ -30,23 +32,28 @@ if (!fs.existsSync(opts.file)) {
 const imageBuffer = fs.readFileSync(opts.file);
 const base64 = imageBuffer.toString("base64");
 
-// Write base64 to a temp file to avoid shell argument length limits
-const tmpFile = `.tmp-image-${opts.id}.txt`;
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "upload-image-"));
+const tmpFile = path.join(tmpDir, "image.txt");
+const tmpManifest = path.join(tmpDir, "manifest.json");
 fs.writeFileSync(tmpFile, base64);
 
 try {
   // Upload image data to IMAGES namespace
-  execSync(
-    `wrangler kv:key put --binding=IMAGES "image:${opts.id}" --path="${tmpFile}"`,
-    { stdio: "inherit" }
-  );
+  execFileSync("npx", [
+    "wrangler", "kv:key", "put",
+    "--binding=IMAGES",
+    `image:${opts.id}`,
+    `--path=${tmpFile}`,
+  ], { stdio: "inherit" });
 
   // Get current manifest
   let manifest = { images: [] as any[] };
   try {
-    const raw = execSync(`wrangler kv:key get --binding=CONFIG "image-manifest"`, {
-      encoding: "utf-8",
-    });
+    const raw = execFileSync("npx", [
+      "wrangler", "kv:key", "get",
+      "--binding=CONFIG",
+      "image-manifest",
+    ], { encoding: "utf-8" });
     manifest = JSON.parse(raw);
   } catch {
     // Manifest doesn't exist yet, use empty
@@ -66,20 +73,15 @@ try {
     manifest.images.push(meta);
   }
 
-  const tmpManifest = ".tmp-manifest.json";
   fs.writeFileSync(tmpManifest, JSON.stringify(manifest));
-  try {
-    execSync(
-      `wrangler kv:key put --binding=CONFIG "image-manifest" --path="${tmpManifest}"`,
-      { stdio: "inherit" }
-    );
-  } finally {
-    if (fs.existsSync(tmpManifest)) fs.unlinkSync(tmpManifest);
-  }
+  execFileSync("npx", [
+    "wrangler", "kv:key", "put",
+    "--binding=CONFIG",
+    "image-manifest",
+    `--path=${tmpManifest}`,
+  ], { stdio: "inherit" });
 
   console.log(`Image "${opts.id}" uploaded successfully.`);
 } finally {
-  if (fs.existsSync(tmpFile)) {
-    fs.unlinkSync(tmpFile);
-  }
+  fs.rmSync(tmpDir, { recursive: true, force: true });
 }

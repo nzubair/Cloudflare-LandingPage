@@ -1,13 +1,27 @@
 import { ImageManifest, ImageMeta } from "../types";
 import { randomElement } from "../utils/random";
 
+function isImageManifest(value: unknown): value is ImageManifest {
+  if (!value || typeof value !== "object") return false;
+  const obj = value as { images?: unknown };
+  if (!Array.isArray(obj.images)) return false;
+  return obj.images.every(
+    (item) =>
+      !!item &&
+      typeof item === "object" &&
+      typeof (item as { id?: unknown }).id === "string"
+  );
+}
+
 export async function getImageManifest(
   kv: KVNamespace
 ): Promise<ImageManifest> {
   const raw = await kv.get("image-manifest");
   if (!raw) return { images: [] };
   try {
-    return JSON.parse(raw);
+    const parsed: unknown = JSON.parse(raw);
+    if (isImageManifest(parsed)) return parsed;
+    return { images: [] };
   } catch {
     return { images: [] };
   }

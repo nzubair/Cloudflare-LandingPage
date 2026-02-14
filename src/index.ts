@@ -4,8 +4,7 @@ import { handleRequest } from "./handlers/placeholder";
 export default {
   async fetch(
     request: Request,
-    env: Env,
-    ctx: ExecutionContext
+    env: Env
   ): Promise<Response> {
     return handleRequest(request, env);
   },

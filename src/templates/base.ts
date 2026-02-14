@@ -12,7 +12,8 @@ export function generateHTML(
   const safeText = sanitizeDomain(quote.text);
   const safeAuthor = sanitizeDomain(quote.author);
 
-  const backgroundStyle = imageBase64
+  const isValidBase64 = imageBase64 && /^[A-Za-z0-9+/=]+$/.test(imageBase64);
+  const backgroundStyle = isValidBase64
     ? `background-image: url('data:image/jpeg;base64,${imageBase64}')`
     : `background-color: #1a1a2e`;
 
@@ -33,7 +34,7 @@ export function generateHTML(
 <body>
   <div class="background" style="${backgroundStyle}"></div>
   <div class="overlay"></div>
-  <main class="content">
+  <main class="content" aria-label="Placeholder page for ${safeDomain}">
     <h1 class="domain">${safeDomain}</h1>
     <blockquote class="quote">
       <p>&ldquo;${safeText}&rdquo;</p>

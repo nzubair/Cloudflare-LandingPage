@@ -1,7 +1,7 @@
 import { program } from "commander";
 import * as fs from "fs";
 import * as path from "path";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 program
   .requiredOption("--dir <path>", "Directory containing images")
@@ -45,10 +45,13 @@ for (const file of files) {
   console.log(`\nUploading: ${file} as ${id}...`);
 
   try {
-    execSync(
-      `ts-node scripts/upload-image.ts --file "${filePath}" --id "${id}" --category "${opts.category}" --description "${basename}"`,
-      { stdio: "inherit" }
-    );
+    execFileSync("npx", [
+      "ts-node", "scripts/upload-image.ts",
+      "--file", filePath,
+      "--id", id,
+      "--category", opts.category,
+      "--description", basename,
+    ], { stdio: "inherit" });
   } catch (error) {
     console.error(`Failed to upload ${file}:`, error);
   }

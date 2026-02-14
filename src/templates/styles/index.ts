@@ -41,18 +41,22 @@ export function getBaseCSS(): string {
 
     .domain {
       font-size: clamp(2rem, 8vw, 5rem);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(0, 0, 0, 0.5);
       margin-bottom: 1.5rem;
     }
 
-    .quote { max-width: 600px; }
+    .quote {
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 1.5rem 2rem;
+      border-radius: 0.5rem;
+    }
 
     .quote p {
       font-family: 'Inter', sans-serif;
       font-size: clamp(1rem, 2.5vw, 1.25rem);
       font-weight: 400;
-      opacity: 0.9;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
       margin-bottom: 0.75rem;
       line-height: 1.6;
     }
@@ -61,7 +65,7 @@ export function getBaseCSS(): string {
       font-family: 'Inter', sans-serif;
       font-size: clamp(0.875rem, 2vw, 1rem);
       font-style: normal;
-      opacity: 0.7;
+      opacity: 0.85;
     }
   `;
 }

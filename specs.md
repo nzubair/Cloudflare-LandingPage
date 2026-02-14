@@ -138,7 +138,7 @@ export function getBaseCSS(): string
 export function getStyleCSS(style: StyleVariant): string
 
 // src/utils/random.ts
-export function randomElement<T>(array: T[]): T
+export function randomElement<T>(array: T[]): T | undefined
 
 // src/utils/sanitize.ts
 export function sanitizeDomain(domain: string): string

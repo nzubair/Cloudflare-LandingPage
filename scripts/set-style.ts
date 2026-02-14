@@ -1,5 +1,6 @@
 import { program } from "commander";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
+import * as fs from "fs";
 
 program
   .requiredOption("--domain <hostname>", "Domain to configure (e.g., example.net)")
@@ -19,15 +20,26 @@ if (!validStyles.includes(opts.style)) {
   process.exit(1);
 }
 
-const config = JSON.stringify({ style: opts.style, enabled: true });
+const domainPattern = /^[a-zA-Z0-9.-]+$/;
+if (!domainPattern.test(opts.domain)) {
+  console.error(`Invalid domain "${opts.domain}". Must contain only alphanumeric characters, dots, and hyphens.`);
+  process.exit(1);
+}
+
+const tmpFile = ".tmp-config.json";
+fs.writeFileSync(tmpFile, JSON.stringify({ style: opts.style }));
 
 try {
-  execSync(
-    `wrangler kv:key put --binding=CONFIG "domain:${opts.domain}" '${config}'`,
-    { stdio: "inherit" }
-  );
+  execFileSync("npx", [
+    "wrangler", "kv:key", "put",
+    "--binding=CONFIG",
+    `domain:${opts.domain}`,
+    `--path=${tmpFile}`,
+  ], { stdio: "inherit" });
   console.log(`Style for "${opts.domain}" set to "${opts.style}".`);
 } catch (error) {
   console.error("Failed to set style:", error);
   process.exit(1);
+} finally {
+  if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
 }

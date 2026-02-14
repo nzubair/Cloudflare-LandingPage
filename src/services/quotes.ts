@@ -7,11 +7,26 @@ const FALLBACK_QUOTE: Quote = {
   category: "informational",
 };
 
+function isQuotesData(value: unknown): value is QuotesData {
+  if (!value || typeof value !== "object") return false;
+  const obj = value as { quotes?: unknown };
+  if (!Array.isArray(obj.quotes)) return false;
+  return obj.quotes.every(
+    (item) =>
+      !!item &&
+      typeof item === "object" &&
+      typeof (item as { text?: unknown }).text === "string" &&
+      typeof (item as { author?: unknown }).author === "string"
+  );
+}
+
 export async function getQuotes(kv: KVNamespace): Promise<QuotesData> {
   const raw = await kv.get("quotes");
   if (!raw) return { quotes: [] };
   try {
-    return JSON.parse(raw);
+    const parsed: unknown = JSON.parse(raw);
+    if (isQuotesData(parsed)) return parsed;
+    return { quotes: [] };
   } catch {
     return { quotes: [] };
   }
