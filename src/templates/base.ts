@@ -41,6 +41,7 @@ export function generateHTML(
       <cite>&mdash; ${safeAuthor}</cite>
     </blockquote>
   </main>
+  <a class="github-badge" href="https://github.com/nzubair/Cloudflare-LandingPage" target="_blank" rel="noopener noreferrer">Fork on GitHub</a>
 </body>
 </html>`;
 }
