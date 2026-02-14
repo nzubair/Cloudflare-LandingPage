@@ -45,10 +45,10 @@ export CLOUDFLARE_API_TOKEN=your-token-here
 ### 3. Create KV namespaces
 
 ```bash
-npx wrangler kv:namespace create CONFIG
-npx wrangler kv:namespace create CONFIG --preview
-npx wrangler kv:namespace create IMAGES
-npx wrangler kv:namespace create IMAGES --preview
+npx wrangler kv namespace create CONFIG
+npx wrangler kv namespace create CONFIG --preview
+npx wrangler kv namespace create IMAGES
+npx wrangler kv namespace create IMAGES --preview
 ```
 
 Each command outputs a namespace ID. Copy these into your `.env` file (see next section).
@@ -190,7 +190,7 @@ npm run set-style -- --domain example.net --style modern
 To disable the placeholder for a domain (returns 204 No Content), update the KV entry directly:
 
 ```bash
-npx wrangler kv:key put --binding=CONFIG "domain:example.net" '{"style":"minimalist","enabled":false}'
+npx wrangler kv key put --binding=CONFIG --remote --preview false "domain:example.net" '{"style":"minimalist","enabled":false}'
 ```
 
 ## Project Structure

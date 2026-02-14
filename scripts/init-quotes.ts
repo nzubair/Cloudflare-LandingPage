@@ -25,7 +25,7 @@ const tmpFile = ".tmp-quotes.json";
 fs.writeFileSync(tmpFile, JSON.stringify(defaultQuotes));
 
 try {
-  execSync(`wrangler kv:key put --binding=CONFIG "quotes" --path="${tmpFile}"`, {
+  execSync(`wrangler kv key put --binding=CONFIG --remote --preview false "quotes" --path="${tmpFile}"`, {
     stdio: "inherit",
   });
   console.log("Default quotes initialized successfully.");

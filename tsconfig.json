@@ -11,6 +11,12 @@
     "rootDir": "src",
     "types": ["@cloudflare/workers-types", "node"]
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "node"
+    }
+  },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

@@ -27,7 +27,7 @@ try {
   // Get current quotes
   let quotesData = { quotes: [] as any[] };
   try {
-    const raw = execSync(`wrangler kv:key get --binding=CONFIG "quotes"`, {
+    const raw = execSync(`wrangler kv key get --binding=CONFIG --remote --preview false "quotes"`, {
       encoding: "utf-8",
     });
     quotesData = JSON.parse(raw);
@@ -43,7 +43,7 @@ try {
   });
 
   fs.writeFileSync(tmpFile, JSON.stringify(quotesData));
-  execSync(`wrangler kv:key put --binding=CONFIG "quotes" --path="${tmpFile}"`, {
+  execSync(`wrangler kv key put --binding=CONFIG --remote --preview false "quotes" --path="${tmpFile}"`, {
     stdio: "inherit",
   });
 

@@ -14,7 +14,7 @@
     "set-style": "ts-node scripts/set-style.ts",
     "add-quote": "ts-node scripts/add-quote.ts",
     "list-images": "ts-node scripts/list-images.ts",
-    "setup": "npm run init-quotes && npm run init-manifest"
+    "setup": "npm run generate-config && npm run init-quotes && npm run init-manifest"
   },
   "dependencies": {
     "wrangler": "^4.65.0"
@@ -23,6 +23,7 @@
     "@cloudflare/workers-types": "^4.0.0",
     "@types/node": "^20.0.0",
     "commander": "^11.0.0",
+    "dotenv": "^17.3.1",
     "ts-node": "^10.0.0",
     "typescript": "^5.0.0"
   }

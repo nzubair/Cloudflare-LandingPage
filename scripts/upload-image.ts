@@ -2,7 +2,7 @@ import { program } from "commander";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import { execFileSync } from "child_process";
+import { execSync } from "child_process";
 
 program
   .requiredOption("--file <path>", "Path to image file (JPEG)")
@@ -39,21 +39,16 @@ fs.writeFileSync(tmpFile, base64);
 
 try {
   // Upload image data to IMAGES namespace
-  execFileSync("npx", [
-    "wrangler", "kv:key", "put",
-    "--binding=IMAGES",
-    `image:${opts.id}`,
-    `--path=${tmpFile}`,
-  ], { stdio: "inherit" });
+  execSync(`wrangler kv key put --binding=IMAGES --remote --preview false "image:${opts.id}" --path="${tmpFile}"`, {
+    stdio: "inherit",
+  });
 
   // Get current manifest
   let manifest = { images: [] as any[] };
   try {
-    const raw = execFileSync("npx", [
-      "wrangler", "kv:key", "get",
-      "--binding=CONFIG",
-      "image-manifest",
-    ], { encoding: "utf-8" });
+    const raw = execSync(`wrangler kv key get --binding=CONFIG --remote --preview false "image-manifest"`, {
+      encoding: "utf-8",
+    });
     manifest = JSON.parse(raw);
   } catch {
     // Manifest doesn't exist yet, use empty
@@ -74,12 +69,9 @@ try {
   }
 
   fs.writeFileSync(tmpManifest, JSON.stringify(manifest));
-  execFileSync("npx", [
-    "wrangler", "kv:key", "put",
-    "--binding=CONFIG",
-    "image-manifest",
-    `--path=${tmpManifest}`,
-  ], { stdio: "inherit" });
+  execSync(`wrangler kv key put --binding=CONFIG --remote --preview false "image-manifest" --path="${tmpManifest}"`, {
+    stdio: "inherit",
+  });
 
   console.log(`Image "${opts.id}" uploaded successfully.`);
 } finally {
