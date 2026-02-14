@@ -54,7 +54,7 @@ export function getBaseCSS(): string {
 
     .quote p {
       font-family: 'Inter', sans-serif;
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-size: 1rem;
       font-weight: 400;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
       margin-bottom: 0.75rem;
@@ -66,6 +66,8 @@ export function getBaseCSS(): string {
       font-size: clamp(0.875rem, 2vw, 1rem);
       font-style: normal;
       opacity: 0.85;
+      display: block;
+      text-align: right;
     }
   `;
 }
