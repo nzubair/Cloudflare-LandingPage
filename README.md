@@ -55,16 +55,17 @@ Each command outputs a namespace ID. Copy these into your `.env` file (see next 
 
 ### 4. Add your domains (production)
 
-For each domain you want the worker to serve, add a route in `wrangler.toml`:
+Set the `WORKER_ROUTES` environment variable with a comma-separated list of `pattern:zone_name` pairs. Routes are injected into `wrangler.toml` at build time by `scripts/generate-config.js`.
 
-```toml
-routes = [
-  { pattern = "*example.net/*", zone_name = "example.net" },
-  { pattern = "*anotherdomain.com/*", zone_name = "anotherdomain.com" }
-]
+In your `.env` file (for local deploys):
+
+```
+WORKER_ROUTES=*example.net/*:example.net,*anotherdomain.com/*:anotherdomain.com
 ```
 
-The domain must be added to your Cloudflare account with DNS managed by Cloudflare. The wildcard pattern ensures the worker handles all paths and subdomains.
+Or as a GitHub Actions secret (see [Deploy via GitHub Actions](#option-b-deploy-via-github-actions)).
+
+Each domain must be added to your Cloudflare account with DNS managed by Cloudflare. The wildcard pattern ensures the worker handles all paths and subdomains. When `WORKER_ROUTES` is empty or unset, no routes are added (useful for local dev).
 
 ## Local Development
 
@@ -141,6 +142,7 @@ To set it up:
    - `CONFIG_KV_PREVIEW_NAMESPACE_ID` -- CONFIG preview namespace ID
    - `IMAGES_KV_NAMESPACE_ID` -- IMAGES namespace ID
    - `IMAGES_KV_PREVIEW_NAMESPACE_ID` -- IMAGES preview namespace ID
+   - `WORKER_ROUTES` -- (optional) comma-separated route entries, e.g. `*example.net/*:example.net`
 4. Push to `main` -- the workflow generates `wrangler.toml` from secrets and deploys
 
 You can also trigger a deploy manually from the **Actions** tab using the "Run workflow" button.

@@ -54,5 +54,30 @@ for (const varName of REQUIRED_VARS) {
   );
 }
 
+// Append routes from WORKER_ROUTES env var if set
+// Format: "pattern:zone_name,pattern:zone_name"
+const workerRoutes = process.env.WORKER_ROUTES;
+if (workerRoutes && workerRoutes.trim()) {
+  const entries = workerRoutes
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
+  for (const entry of entries) {
+    const colonIndex = entry.lastIndexOf(":");
+    if (colonIndex === -1) {
+      console.error(`Invalid route entry (expected "pattern:zone_name"): ${entry}`);
+      process.exit(1);
+    }
+    const pattern = entry.slice(0, colonIndex).trim();
+    const zoneName = entry.slice(colonIndex + 1).trim();
+    if (!pattern || !zoneName) {
+      console.error(`Invalid route entry (empty pattern or zone_name): ${entry}`);
+      process.exit(1);
+    }
+    content += `\n[[routes]]\npattern = "${pattern}"\nzone_name = "${zoneName}"\n`;
+  }
+  console.log(`Added ${entries.length} route(s) from WORKER_ROUTES.`);
+}
+
 fs.writeFileSync(OUTPUT, content, "utf-8");
 console.log("Generated wrangler.toml from template.");
