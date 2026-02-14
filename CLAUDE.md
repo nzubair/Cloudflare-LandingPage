@@ -4,6 +4,14 @@
 
 This is a Cloudflare Worker that serves as a generic placeholder page for parked/in-development domains. It displays the domain name with a random background image and quote, configurable per domain via KV storage.
 
+## Workflow Expectations
+
+- If a feature or function already exists, review it before creating new code.
+- When stuck, expand the reasoning and ask questions before retrying.
+- All features must respect the current architecture and file structure.
+- always introduce changes via a pull request
+
+
 **Key Features:**
 - Single worker serves unlimited domains
 - Dynamic domain name display
