@@ -1,0 +1,18 @@
+name = "domain-placeholder-worker"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "CONFIG"
+id = ""  # Set after creation
+preview_id = ""  # Set after creation
+
+[[kv_namespaces]]
+binding = "IMAGES"
+id = ""  # Set after creation
+preview_id = ""  # Set after creation
+
+# Routes configured per deployment
+# routes = [
+#   { pattern = "*example.net/*", zone_name = "example.net" }
+# ]

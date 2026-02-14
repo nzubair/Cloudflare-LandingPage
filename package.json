@@ -1,0 +1,28 @@
+{
+  "name": "domain-placeholder-worker",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "init-quotes": "ts-node scripts/init-quotes.ts",
+    "init-manifest": "ts-node scripts/init-manifest.ts",
+    "upload-image": "ts-node scripts/upload-image.ts",
+    "upload-images": "ts-node scripts/upload-images.ts",
+    "set-style": "ts-node scripts/set-style.ts",
+    "add-quote": "ts-node scripts/add-quote.ts",
+    "list-images": "ts-node scripts/list-images.ts",
+    "setup": "npm run init-quotes && npm run init-manifest"
+  },
+  "dependencies": {
+    "wrangler": "^4.65.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "@types/node": "^20.0.0",
+    "commander": "^11.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
+  }
+}
