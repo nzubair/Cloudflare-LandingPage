@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-## Domain Placeholder Worker
+## Cloudflare-LandingPage
 
 **Version:** 1.0  
 **Date:** February 2026  
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-Domain Placeholder Worker is a Cloudflare Worker application that serves as a generic, visually appealing placeholder page for parked or in-development domains. It dynamically displays the domain name with a random background image and inspirational/humorous quote, requiring minimal configuration to deploy across multiple domains.
+Cloudflare-LandingPage is a Cloudflare Worker application that serves as a generic, visually appealing placeholder page for parked or in-development domains. It dynamically displays the domain name with a random background image and inspirational/humorous quote, requiring minimal configuration to deploy across multiple domains.
 
 ---
 
@@ -319,7 +319,7 @@ Two KV namespaces are required:
 **Option C: Manual Wrangler Deploy**
 ```bash
 git clone <repo>
-cd domain-placeholder-worker
+cd Cloudflare-LandingPage
 npm install
 wrangler kv:namespace create IMAGES
 wrangler kv:namespace create CONFIG
