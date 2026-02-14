@@ -2,15 +2,21 @@ name = "domain-placeholder-worker"
 main = "src/index.ts"
 compatibility_date = "2026-02-14"
 
+# KV namespace IDs — fill in after running:
+#   wrangler kv:namespace create CONFIG
+#   wrangler kv:namespace create CONFIG --preview
+#   wrangler kv:namespace create IMAGES
+#   wrangler kv:namespace create IMAGES --preview
+
 [[kv_namespaces]]
 binding = "CONFIG"
-id = ""  # Set after creation
-preview_id = ""  # Set after creation
+id = ""
+preview_id = ""
 
 [[kv_namespaces]]
 binding = "IMAGES"
-id = ""  # Set after creation
-preview_id = ""  # Set after creation
+id = ""
+preview_id = ""
 
 # Routes configured per deployment
 # routes = [

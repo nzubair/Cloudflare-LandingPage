@@ -1,9 +1,11 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 try {
-  const raw = execSync(`wrangler kv:key get --binding=CONFIG "image-manifest"`, {
-    encoding: "utf-8",
-  });
+  const raw = execFileSync("npx", [
+    "wrangler", "kv:key", "get",
+    "--binding=CONFIG",
+    "image-manifest",
+  ], { encoding: "utf-8" });
   const manifest = JSON.parse(raw);
 
   if (manifest.images.length === 0) {

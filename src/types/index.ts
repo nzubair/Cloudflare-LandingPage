@@ -21,6 +21,7 @@ export interface ImageMeta {
 
 export interface DomainConfig {
   style: StyleVariant;
+  enabled?: boolean;
 }
 
 export interface QuotesData {

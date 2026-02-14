@@ -2,9 +2,16 @@ import { DomainConfig, StyleVariant } from "../types";
 
 const DEFAULT_CONFIG: DomainConfig = {
   style: "minimalist",
+  enabled: true,
 };
 
 const VALID_STYLES: StyleVariant[] = ["minimalist", "modern", "playful"];
+
+function isDomainConfig(value: unknown): value is DomainConfig {
+  if (!value || typeof value !== "object") return false;
+  const obj = value as { style?: unknown };
+  return typeof obj.style === "string";
+}
 
 export async function getDomainConfig(
   kv: KVNamespace,
@@ -14,13 +21,18 @@ export async function getDomainConfig(
   if (!raw) return DEFAULT_CONFIG;
 
   try {
-    const config: DomainConfig = JSON.parse(raw);
+    const parsed: unknown = JSON.parse(raw);
+    if (!isDomainConfig(parsed)) return DEFAULT_CONFIG;
 
-    if (!VALID_STYLES.includes(config.style)) {
-      config.style = "minimalist";
+    if (!VALID_STYLES.includes(parsed.style)) {
+      parsed.style = "minimalist";
     }
 
-    return config;
+    if (typeof parsed.enabled !== "boolean") {
+      parsed.enabled = true;
+    }
+
+    return parsed;
   } catch {
     return DEFAULT_CONFIG;
   }

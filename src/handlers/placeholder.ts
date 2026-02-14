@@ -12,8 +12,13 @@ export async function handleRequest(
     const url = new URL(request.url);
     const domain = url.hostname;
 
-    const [config, imageBase64, quote] = await Promise.all([
-      getDomainConfig(env.CONFIG, domain),
+    const config = await getDomainConfig(env.CONFIG, domain);
+
+    if (config.enabled === false) {
+      return new Response("", { status: 204 });
+    }
+
+    const [imageBase64, quote] = await Promise.all([
       getRandomImage(env.CONFIG, env.IMAGES),
       getRandomQuote(env.CONFIG),
     ]);
