@@ -1,4 +1,4 @@
-# Domain Placeholder Worker
+# Cloudflare-LandingPage
 
 A Cloudflare Worker that serves placeholder pages for parked or in-development domains. Displays the domain name over a random background image with an inspirational quote.
 
@@ -8,11 +8,77 @@ A Cloudflare Worker that serves placeholder pages for parked or in-development d
 - Random background images stored in Workers KV (no external dependencies)
 - Random quotes with author attribution
 - Three style variants: minimalist (default), modern, playful
-- Per-domain style configuration
+- Per-domain style configuration and enable/disable toggle
 - CLI tools for image and content management
 - Fully self-contained HTML responses (no extra asset requests besides Google Fonts)
 
-## Quick Start
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) 20 or later
+- A [Cloudflare account](https://dash.cloudflare.com/sign-up) (free tier works)
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/) (installed as a project dependency)
+- One or more domains added to your Cloudflare account (for production routing)
+
+## Cloudflare Setup
+
+Before deploying, complete these one-time steps in your Cloudflare account.
+
+### 1. Create a Cloudflare API Token
+
+1. Go to [Cloudflare Dashboard > My Profile > API Tokens](https://dash.cloudflare.com/profile/api-tokens)
+2. Click **Create Token**
+3. Use the **Edit Cloudflare Workers** template (or create a custom token with `Workers Scripts:Edit` and `Workers KV Storage:Edit` permissions)
+4. Save the token -- you will need it for both local CLI usage and GitHub Actions
+
+### 2. Authenticate Wrangler locally
+
+```bash
+npx wrangler login
+```
+
+This opens a browser to authorize Wrangler with your Cloudflare account. Alternatively, set the token as an environment variable:
+
+```bash
+export CLOUDFLARE_API_TOKEN=your-token-here
+```
+
+### 3. Create KV namespaces
+
+```bash
+npx wrangler kv:namespace create CONFIG
+npx wrangler kv:namespace create CONFIG --preview
+npx wrangler kv:namespace create IMAGES
+npx wrangler kv:namespace create IMAGES --preview
+```
+
+Each command outputs a namespace ID. Copy these into `wrangler.toml`:
+
+```toml
+[[kv_namespaces]]
+binding = "CONFIG"
+id = "<id from CONFIG>"
+preview_id = "<id from CONFIG --preview>"
+
+[[kv_namespaces]]
+binding = "IMAGES"
+id = "<id from IMAGES>"
+preview_id = "<id from IMAGES --preview>"
+```
+
+### 4. Add your domains (production)
+
+For each domain you want the worker to serve, add a route in `wrangler.toml`:
+
+```toml
+routes = [
+  { pattern = "*example.net/*", zone_name = "example.net" },
+  { pattern = "*anotherdomain.com/*", zone_name = "anotherdomain.com" }
+]
+```
+
+The domain must be added to your Cloudflare account with DNS managed by Cloudflare. The wildcard pattern ensures the worker handles all paths and subdomains.
+
+## Local Development
 
 ### 1. Install dependencies
 
@@ -20,103 +86,129 @@ A Cloudflare Worker that serves placeholder pages for parked or in-development d
 npm install
 ```
 
-### 2. Create KV namespaces
-
-```bash
-wrangler kv:namespace create CONFIG
-wrangler kv:namespace create IMAGES
-wrangler kv:namespace create CONFIG --preview
-wrangler kv:namespace create IMAGES --preview
-```
-
-Update `wrangler.toml` with the returned namespace IDs.
-
-### 3. Initialize default content
+### 2. Initialize default content
 
 ```bash
 npm run setup
 ```
 
-### 4. Upload images
+This populates KV with 15 default quotes and an empty image manifest.
+
+### 3. Upload at least one image
 
 ```bash
-# Single image
-npm run upload-image -- --file ./images/mountain.jpg --id nature-001 --category nature --description "Misty mountain"
-
-# Batch upload
-npm run upload-images -- --dir ./images/nature --category nature
+mkdir -p images
+# Place a JPEG file in the images/ directory, then:
+npm run upload-image -- --file ./images/photo.jpg --id nature-001 --category nature --description "Sample photo"
 ```
 
-### 5. Run locally
+### 4. Start the local dev server
 
 ```bash
 npm run dev
 ```
 
-### 6. Deploy
+Wrangler starts a local server (typically at `http://localhost:8787`). Open it in your browser to see the placeholder page. The page displays `localhost` as the domain name, a random quote, and the uploaded background image. Refresh to see different quotes.
+
+> **Note:** Local dev uses the `preview_id` KV namespaces. Production deployments use the `id` namespaces.
+
+## Deploying to Production
+
+### Option A: Deploy manually
 
 ```bash
 npm run deploy
 ```
 
+This deploys the worker to your Cloudflare account using the routes configured in `wrangler.toml`.
+
+### Option B: Deploy via GitHub Actions
+
+The repository includes a workflow at `.github/workflows/deploy.yml` that automatically deploys on every push to `main`.
+
+To set it up:
+
+1. **Fork or push** this repository to GitHub
+2. Go to **Settings > Secrets and variables > Actions** in your GitHub repo
+3. Add a repository secret named `CLOUDFLARE_API_TOKEN` with your API token
+4. Make sure `wrangler.toml` has your KV namespace IDs and routes filled in before pushing
+5. Push to `main` -- the workflow will install dependencies and deploy via `wrangler deploy`
+
+You can also trigger a deploy manually from the **Actions** tab using the "Run workflow" button.
+
 ## CLI Tools
 
 | Command | Description |
 |---------|-------------|
-| `npm run setup` | Initialize default quotes and image manifest |
-| `npm run upload-image` | Upload a single image to KV |
-| `npm run upload-images` | Batch upload images from a directory |
-| `npm run set-style` | Set style variant for a domain |
+| `npm run setup` | Initialize default quotes and empty image manifest |
+| `npm run upload-image` | Upload a single JPEG image to KV |
+| `npm run upload-images` | Batch upload all JPEGs from a directory |
+| `npm run set-style` | Set style variant for a specific domain |
 | `npm run add-quote` | Add a quote to the collection |
-| `npm run list-images` | List all stored images |
+| `npm run list-images` | List all images stored in the manifest |
+
+### Examples
+
+```bash
+# Upload a single image
+npm run upload-image -- --file ./images/mountain.jpg --id nature-001 --category nature --description "Misty mountain"
+
+# Batch upload all JPEGs in a directory
+npm run upload-images -- --dir ./images/nature --category nature
+
+# Set a domain to use the playful style
+npm run set-style -- --domain example.net --style playful
+
+# Add a custom quote
+npm run add-quote -- --text "Stay hungry, stay foolish." --author "Steve Jobs" --category inspirational
+```
 
 ## Style Variants
 
-- **minimalist** — Clean serif headings, subtle overlay (default)
-- **modern** — Light sans-serif headings, gradient overlay
-- **playful** — Animated fade-in, vibrant saturation
+- **minimalist** -- Clean serif headings, subtle overlay (default)
+- **modern** -- Light sans-serif headings, gradient overlay
+- **playful** -- Animated fade-in, vibrant saturation
 
-Set per domain:
+## Domain Configuration
+
+Each domain can be individually configured via KV:
 
 ```bash
-npm run set-style -- --domain example.net --style playful
+# Set style
+npm run set-style -- --domain example.net --style modern
 ```
 
-## Configuration
+To disable the placeholder for a domain (returns 204 No Content), update the KV entry directly:
 
-### KV Namespace IDs
-
-After creating KV namespaces, update `wrangler.toml` with the returned IDs:
-
-```toml
-[[kv_namespaces]]
-binding = "CONFIG"
-id = "<your-config-namespace-id>"
-preview_id = "<your-config-preview-namespace-id>"
-
-[[kv_namespaces]]
-binding = "IMAGES"
-id = "<your-images-namespace-id>"
-preview_id = "<your-images-preview-namespace-id>"
+```bash
+npx wrangler kv:key put --binding=CONFIG "domain:example.net" '{"style":"minimalist","enabled":false}'
 ```
 
-### GitHub Actions Secret
+## Project Structure
 
-Add `CLOUDFLARE_API_TOKEN` to your repository secrets for automated deployment.
-
-### Routes
-
-Configure domain routing in `wrangler.toml`:
-
-```toml
-routes = [
-  { pattern = "*example.net/*", zone_name = "example.net" }
-]
 ```
-
-## GitHub Actions
-
-Automated deployment on push to `main`. Add `CLOUDFLARE_API_TOKEN` to your repository secrets.
+Cloudflare-LandingPage/
+├── src/
+│   ├── index.ts              # Worker entry point
+│   ├── handlers/
+│   │   └── placeholder.ts    # Request handler
+│   ├── templates/
+│   │   ├── base.ts           # HTML template
+│   │   └── styles/           # CSS per variant
+│   ├── services/
+│   │   ├── config.ts         # Domain config from KV
+│   │   ├── images.ts         # Image operations
+│   │   └── quotes.ts         # Quote operations
+│   ├── types/
+│   │   └── index.ts          # TypeScript interfaces
+│   └── utils/
+│       ├── random.ts         # Random selection
+│       └── sanitize.ts       # HTML sanitization
+├── scripts/                  # CLI tools
+├── wrangler.toml             # Wrangler config
+├── package.json
+└── tsconfig.json
+```
 
 ## License
 

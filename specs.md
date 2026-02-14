@@ -3,7 +3,7 @@
 ## Project Metadata
 
 ```yaml
-name: domain-placeholder-worker
+name: cloudflare-landingpage
 version: 1.0.0
 license: MIT
 runtime: cloudflare-workers
@@ -172,7 +172,7 @@ export interface ImageMeta {
 
 export interface DomainConfig {
   style: StyleVariant;
-  enabled: boolean;
+  enabled?: boolean;
 }
 
 export interface QuotesData {
@@ -204,7 +204,7 @@ export interface ImageManifest {
 
 ### wrangler.toml
 ```toml
-name = "domain-placeholder-worker"
+name = "cloudflare-landingpage"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
 

@@ -1,4 +1,4 @@
-# Claude.md - Domain Placeholder Worker
+# Claude.md - Cloudflare-LandingPage
 
 ## Project Overview
 
@@ -25,7 +25,7 @@ This is a Cloudflare Worker that serves as a generic placeholder page for parked
 ## Project Structure
 
 ```
-domain-placeholder-worker/
+Cloudflare-LandingPage/
 ├── src/
 │   ├── index.ts              # Main worker entry point
 │   ├── handlers/
@@ -89,7 +89,7 @@ interface ImageManifest {
 // Key: "domain:{hostname}" (e.g., "domain:example.net")
 interface DomainConfig {
   style: "minimalist" | "modern" | "playful";
-  enabled: boolean;
+  enabled?: boolean;
 }
 ```
 
@@ -134,7 +134,7 @@ export default {
 ### Environment Bindings (wrangler.toml)
 
 ```toml
-name = "domain-placeholder-worker"
+name = "cloudflare-landingpage"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
 
@@ -180,7 +180,7 @@ export interface ImageMeta {
 
 export interface DomainConfig {
   style: StyleVariant;
-  enabled: boolean;
+  enabled?: boolean;
 }
 
 export interface QuotesData {
@@ -464,7 +464,7 @@ jobs:
 
 Add to README.md:
 ```markdown
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/domain-placeholder-worker)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/cloudflare-landingpage)
 ```
 
 ## Development Workflow
