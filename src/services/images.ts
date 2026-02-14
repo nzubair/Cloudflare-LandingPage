@@ -6,7 +6,11 @@ export async function getImageManifest(
 ): Promise<ImageManifest> {
   const raw = await kv.get("image-manifest");
   if (!raw) return { images: [] };
-  return JSON.parse(raw);
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return { images: [] };
+  }
 }
 
 export async function getRandomImage(
@@ -20,6 +24,7 @@ export async function getRandomImage(
   }
 
   const meta = randomElement(manifest.images);
+  if (!meta) return "";
   const base64 = await imagesKv.get(`image:${meta.id}`);
 
   return base64 ?? "";

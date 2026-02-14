@@ -14,13 +14,17 @@ export async function getDomainConfig(
   const raw = await kv.get(`domain:${domain}`);
   if (!raw) return DEFAULT_CONFIG;
 
-  const config: DomainConfig = JSON.parse(raw);
+  try {
+    const config: DomainConfig = JSON.parse(raw);
 
-  if (!VALID_STYLES.includes(config.style)) {
-    config.style = "minimalist";
+    if (!VALID_STYLES.includes(config.style)) {
+      config.style = "minimalist";
+    }
+
+    return config;
+  } catch {
+    return DEFAULT_CONFIG;
   }
-
-  return config;
 }
 
 export async function setDomainConfig(

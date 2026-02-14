@@ -1,4 +1,5 @@
 import { execSync } from "child_process";
+import * as fs from "fs";
 
 const defaultQuotes = {
   quotes: [
@@ -20,14 +21,17 @@ const defaultQuotes = {
   ],
 };
 
-const json = JSON.stringify(defaultQuotes);
+const tmpFile = ".tmp-quotes.json";
+fs.writeFileSync(tmpFile, JSON.stringify(defaultQuotes));
 
 try {
-  execSync(`wrangler kv:key put --binding=CONFIG "quotes" '${json}'`, {
+  execSync(`wrangler kv:key put --binding=CONFIG "quotes" --path="${tmpFile}"`, {
     stdio: "inherit",
   });
   console.log("Default quotes initialized successfully.");
 } catch (error) {
   console.error("Failed to initialize quotes:", error);
   process.exit(1);
+} finally {
+  if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
 }

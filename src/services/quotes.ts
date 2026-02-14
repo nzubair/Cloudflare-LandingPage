@@ -10,7 +10,11 @@ const FALLBACK_QUOTE: Quote = {
 export async function getQuotes(kv: KVNamespace): Promise<QuotesData> {
   const raw = await kv.get("quotes");
   if (!raw) return { quotes: [] };
-  return JSON.parse(raw);
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return { quotes: [] };
+  }
 }
 
 export async function getRandomQuote(kv: KVNamespace): Promise<Quote> {
@@ -20,7 +24,7 @@ export async function getRandomQuote(kv: KVNamespace): Promise<Quote> {
     return FALLBACK_QUOTE;
   }
 
-  return randomElement(data.quotes);
+  return randomElement(data.quotes) ?? FALLBACK_QUOTE;
 }
 
 export async function addQuote(kv: KVNamespace, quote: Quote): Promise<void> {

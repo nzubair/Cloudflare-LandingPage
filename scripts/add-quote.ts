@@ -1,5 +1,6 @@
 import { program } from "commander";
 import { execSync } from "child_process";
+import * as fs from "fs";
 
 program
   .requiredOption("--text <string>", "Quote text")
@@ -20,6 +21,8 @@ if (!validCategories.includes(opts.category)) {
   process.exit(1);
 }
 
+const tmpFile = ".tmp-quotes.json";
+
 try {
   // Get current quotes
   let quotesData = { quotes: [] as any[] };
@@ -39,8 +42,8 @@ try {
     category: opts.category,
   });
 
-  const json = JSON.stringify(quotesData);
-  execSync(`wrangler kv:key put --binding=CONFIG "quotes" '${json}'`, {
+  fs.writeFileSync(tmpFile, JSON.stringify(quotesData));
+  execSync(`wrangler kv:key put --binding=CONFIG "quotes" --path="${tmpFile}"`, {
     stdio: "inherit",
   });
 
@@ -48,4 +51,6 @@ try {
 } catch (error) {
   console.error("Failed to add quote:", error);
   process.exit(1);
+} finally {
+  if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
 }

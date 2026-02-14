@@ -8,7 +8,7 @@ version: 1.0.0
 license: MIT
 runtime: cloudflare-workers
 language: typescript
-node_version: ">=18.0.0"
+node_version: ">=20.0.0"
 package_manager: npm
 ```
 
@@ -33,7 +33,7 @@ package_manager: npm
 ### Production
 ```json
 {
-  "wrangler": "^3.0.0"
+  "wrangler": "^4.0.0"
 }
 ```
 
@@ -473,8 +473,8 @@ jobs:
 
 | Condition | Behavior |
 |-----------|----------|
-| Missing image manifest | Return 500 with error message |
-| Empty image manifest | Return 500 with error message |
+| Missing image manifest | Use solid color fallback (#1a1a2e) |
+| Empty image manifest | Use solid color fallback (#1a1a2e) |
 | Image fetch fails | Use solid color fallback (#1a1a2e) |
 | Missing quotes | Use fallback quote: "Coming soon..." — This Domain |
 | Missing domain config | Use default style: "minimalist" |

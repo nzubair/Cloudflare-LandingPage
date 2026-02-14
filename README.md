@@ -84,15 +84,25 @@ npm run set-style -- --domain example.net --style playful
 
 ## Configuration
 
-### Environment Variables
+### KV Namespace IDs
 
-Copy `.env.example` and fill in your values:
+After creating KV namespaces, update `wrangler.toml` with the returned IDs:
 
-| Variable | Description |
-|----------|-------------|
-| `CLOUDFLARE_API_TOKEN` | API token with Workers edit permission |
-| `CONFIG_KV_NAMESPACE_ID` | KV namespace ID for config data |
-| `IMAGES_KV_NAMESPACE_ID` | KV namespace ID for image data |
+```toml
+[[kv_namespaces]]
+binding = "CONFIG"
+id = "<your-config-namespace-id>"
+preview_id = "<your-config-preview-namespace-id>"
+
+[[kv_namespaces]]
+binding = "IMAGES"
+id = "<your-images-namespace-id>"
+preview_id = "<your-images-preview-namespace-id>"
+```
+
+### GitHub Actions Secret
+
+Add `CLOUDFLARE_API_TOKEN` to your repository secrets for automated deployment.
 
 ### Routes
 

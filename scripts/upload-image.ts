@@ -66,15 +66,19 @@ try {
     manifest.images.push(meta);
   }
 
-  const manifestJson = JSON.stringify(manifest);
-  execSync(
-    `wrangler kv:key put --binding=CONFIG "image-manifest" '${manifestJson}'`,
-    { stdio: "inherit" }
-  );
+  const tmpManifest = ".tmp-manifest.json";
+  fs.writeFileSync(tmpManifest, JSON.stringify(manifest));
+  try {
+    execSync(
+      `wrangler kv:key put --binding=CONFIG "image-manifest" --path="${tmpManifest}"`,
+      { stdio: "inherit" }
+    );
+  } finally {
+    if (fs.existsSync(tmpManifest)) fs.unlinkSync(tmpManifest);
+  }
 
   console.log(`Image "${opts.id}" uploaded successfully.`);
 } finally {
-  // Clean up temp file
   if (fs.existsSync(tmpFile)) {
     fs.unlinkSync(tmpFile);
   }

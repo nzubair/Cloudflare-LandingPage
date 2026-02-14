@@ -300,7 +300,7 @@ Two KV namespaces are required:
 
 ### 11.1 Prerequisites
 - Cloudflare account with Workers enabled
-- Node.js 18+ installed
+- Node.js 20+ installed
 - Wrangler CLI installed (`npm install -g wrangler`)
 - GitHub account (for CI/CD)
 
