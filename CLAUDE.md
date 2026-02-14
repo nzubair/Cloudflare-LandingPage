@@ -50,9 +50,10 @@ Cloudflare-LandingPage/
 │   ├── set-style.ts          # Domain style configuration
 │   ├── add-quote.ts          # Add quote to collection
 │   ├── init-quotes.ts        # Initialize default quotes
-│   └── list-images.ts        # List all stored images
+│   ├── list-images.ts        # List all stored images
+│   └── generate-config.js    # Generates wrangler.toml from template + env vars
 ├── images/                   # Local image storage (gitignored, for uploads)
-├── wrangler.toml             # Wrangler configuration
+├── wrangler.template.toml    # Wrangler config template ({{VAR}} placeholders)
 ├── package.json
 ├── tsconfig.json
 ├── .github/
@@ -131,24 +132,28 @@ export default {
 };
 ```
 
-### Environment Bindings (wrangler.toml)
+### Environment Bindings (wrangler.template.toml)
+
+`wrangler.toml` is generated at build time by `scripts/generate-config.js`, which reads
+`wrangler.template.toml` and replaces `{{VAR}}` placeholders with environment variables
+(from `.env` locally, or from CI secrets). The generated `wrangler.toml` is gitignored.
 
 ```toml
 name = "cloudflare-landingpage"
 main = "src/index.ts"
-compatibility_date = "2024-01-01"
+compatibility_date = "2026-02-14"
 
 [[kv_namespaces]]
 binding = "CONFIG"
-id = "<CONFIG_NAMESPACE_ID>"
-preview_id = "<CONFIG_PREVIEW_NAMESPACE_ID>"
+id = "{{CONFIG_KV_NAMESPACE_ID}}"
+preview_id = "{{CONFIG_KV_PREVIEW_NAMESPACE_ID}}"
 
 [[kv_namespaces]]
 binding = "IMAGES"
-id = "<IMAGES_NAMESPACE_ID>"
-preview_id = "<IMAGES_PREVIEW_NAMESPACE_ID>"
+id = "{{IMAGES_KV_NAMESPACE_ID}}"
+preview_id = "{{IMAGES_KV_PREVIEW_NAMESPACE_ID}}"
 
-# Example routes - users will customize these
+# Routes configured per deployment
 # routes = [
 #   { pattern = "*example.net/*", zone_name = "example.net" }
 # ]
@@ -432,7 +437,7 @@ const defaultQuotes = {
 ### GitHub Actions Workflow (.github/workflows/deploy.yml)
 
 ```yaml
-name: Deploy to Cloudflare Workers
+name: Deploy
 
 on:
   push:
@@ -444,20 +449,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Deploy to Cloudflare
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - run: npm ci
+
+      - run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CONFIG_KV_NAMESPACE_ID: ${{ secrets.CONFIG_KV_NAMESPACE_ID }}
+          CONFIG_KV_PREVIEW_NAMESPACE_ID: ${{ secrets.CONFIG_KV_PREVIEW_NAMESPACE_ID }}
+          IMAGES_KV_NAMESPACE_ID: ${{ secrets.IMAGES_KV_NAMESPACE_ID }}
+          IMAGES_KV_PREVIEW_NAMESPACE_ID: ${{ secrets.IMAGES_KV_PREVIEW_NAMESPACE_ID }}
 ```
 
 ### Deploy to Cloudflare Button
@@ -479,7 +485,8 @@ wrangler kv:namespace create IMAGES
 wrangler kv:namespace create CONFIG --preview
 wrangler kv:namespace create IMAGES --preview
 
-# Update wrangler.toml with namespace IDs
+# Copy .env.example to .env and fill in namespace IDs
+cp .env.example .env
 
 # Initialize default quotes
 npm run init-quotes
@@ -487,10 +494,10 @@ npm run init-quotes
 # Upload images
 npm run upload-image -- --file ./images/mountain.jpg --id nature-001 --category nature
 
-# Local development
+# Local development (generates wrangler.toml from .env automatically)
 npm run dev
 
-# Deploy
+# Deploy (generates wrangler.toml from env vars automatically)
 npm run deploy
 ```
 

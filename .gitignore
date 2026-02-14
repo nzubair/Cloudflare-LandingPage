@@ -4,3 +4,4 @@ images/
 .env
 .dev.vars
 .wrangler/
+wrangler.toml

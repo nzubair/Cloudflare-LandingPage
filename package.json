@@ -4,8 +4,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "generate-config": "node scripts/generate-config.js",
+    "dev": "node scripts/generate-config.js && wrangler dev",
+    "deploy": "node scripts/generate-config.js && wrangler deploy",
     "init-quotes": "ts-node scripts/init-quotes.ts",
     "init-manifest": "ts-node scripts/init-manifest.ts",
     "upload-image": "ts-node scripts/upload-image.ts",

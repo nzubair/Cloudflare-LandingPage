@@ -51,19 +51,7 @@ npx wrangler kv:namespace create IMAGES
 npx wrangler kv:namespace create IMAGES --preview
 ```
 
-Each command outputs a namespace ID. Copy these into `wrangler.toml`:
-
-```toml
-[[kv_namespaces]]
-binding = "CONFIG"
-id = "<id from CONFIG>"
-preview_id = "<id from CONFIG --preview>"
-
-[[kv_namespaces]]
-binding = "IMAGES"
-id = "<id from IMAGES>"
-preview_id = "<id from IMAGES --preview>"
-```
+Each command outputs a namespace ID. Copy these into your `.env` file (see next section).
 
 ### 4. Add your domains (production)
 
@@ -86,7 +74,24 @@ The domain must be added to your Cloudflare account with DNS managed by Cloudfla
 npm install
 ```
 
-### 2. Initialize default content
+### 2. Configure environment variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and fill in your KV namespace IDs from the previous step:
+
+```
+CONFIG_KV_NAMESPACE_ID=<id from CONFIG>
+CONFIG_KV_PREVIEW_NAMESPACE_ID=<id from CONFIG --preview>
+IMAGES_KV_NAMESPACE_ID=<id from IMAGES>
+IMAGES_KV_PREVIEW_NAMESPACE_ID=<id from IMAGES --preview>
+```
+
+The `npm run dev` and `npm run deploy` commands automatically generate `wrangler.toml` from these values.
+
+### 3. Initialize default content
 
 ```bash
 npm run setup
@@ -94,7 +99,7 @@ npm run setup
 
 This populates KV with 15 default quotes and an empty image manifest.
 
-### 3. Upload at least one image
+### 4. Upload at least one image
 
 ```bash
 mkdir -p images
@@ -102,7 +107,7 @@ mkdir -p images
 npm run upload-image -- --file ./images/photo.jpg --id nature-001 --category nature --description "Sample photo"
 ```
 
-### 4. Start the local dev server
+### 5. Start the local dev server
 
 ```bash
 npm run dev
@@ -130,9 +135,13 @@ To set it up:
 
 1. **Fork or push** this repository to GitHub
 2. Go to **Settings > Secrets and variables > Actions** in your GitHub repo
-3. Add a repository secret named `CLOUDFLARE_API_TOKEN` with your API token
-4. Make sure `wrangler.toml` has your KV namespace IDs and routes filled in before pushing
-5. Push to `main` -- the workflow will install dependencies and deploy via `wrangler deploy`
+3. Add the following repository secrets:
+   - `CLOUDFLARE_API_TOKEN` -- your API token
+   - `CONFIG_KV_NAMESPACE_ID` -- CONFIG namespace ID
+   - `CONFIG_KV_PREVIEW_NAMESPACE_ID` -- CONFIG preview namespace ID
+   - `IMAGES_KV_NAMESPACE_ID` -- IMAGES namespace ID
+   - `IMAGES_KV_PREVIEW_NAMESPACE_ID` -- IMAGES preview namespace ID
+4. Push to `main` -- the workflow generates `wrangler.toml` from secrets and deploys
 
 You can also trigger a deploy manually from the **Actions** tab using the "Run workflow" button.
 
@@ -205,7 +214,7 @@ Cloudflare-LandingPage/
 │       ├── random.ts         # Random selection
 │       └── sanitize.ts       # HTML sanitization
 ├── scripts/                  # CLI tools
-├── wrangler.toml             # Wrangler config
+├── wrangler.template.toml    # Wrangler config template
 ├── package.json
 └── tsconfig.json
 ```

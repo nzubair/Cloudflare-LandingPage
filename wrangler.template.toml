@@ -1,0 +1,21 @@
+name = "cloudflare-landingpage"
+main = "src/index.ts"
+compatibility_date = "2026-02-14"
+
+# KV namespace IDs are injected from environment variables by scripts/generate-config.js
+# See .env.example for required variables
+
+[[kv_namespaces]]
+binding = "CONFIG"
+id = "{{CONFIG_KV_NAMESPACE_ID}}"
+preview_id = "{{CONFIG_KV_PREVIEW_NAMESPACE_ID}}"
+
+[[kv_namespaces]]
+binding = "IMAGES"
+id = "{{IMAGES_KV_NAMESPACE_ID}}"
+preview_id = "{{IMAGES_KV_PREVIEW_NAMESPACE_ID}}"
+
+# Routes configured per deployment
+# routes = [
+#   { pattern = "*example.net/*", zone_name = "example.net" }
+# ]
