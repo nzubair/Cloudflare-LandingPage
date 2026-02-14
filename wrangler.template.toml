@@ -15,7 +15,5 @@ binding = "IMAGES"
 id = "{{IMAGES_KV_NAMESPACE_ID}}"
 preview_id = "{{IMAGES_KV_PREVIEW_NAMESPACE_ID}}"
 
-# Routes configured per deployment
-# routes = [
-#   { pattern = "*example.net/*", zone_name = "example.net" }
-# ]
+# Routes are injected at build time from the WORKER_ROUTES env var.
+# See .env.example for the expected format.
