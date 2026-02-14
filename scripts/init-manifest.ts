@@ -4,7 +4,7 @@ const emptyManifest = { images: [] };
 const json = JSON.stringify(emptyManifest);
 
 try {
-  execSync(`wrangler kv:key put --binding=CONFIG "image-manifest" '${json}'`, {
+  execSync(`wrangler kv key put --binding=CONFIG --remote --preview false "image-manifest" '${json}'`, {
     stdio: "inherit",
   });
   console.log("Image manifest initialized successfully.");

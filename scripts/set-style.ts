@@ -1,5 +1,5 @@
 import { program } from "commander";
-import { execFileSync } from "child_process";
+import { execSync } from "child_process";
 import * as fs from "fs";
 
 program
@@ -30,12 +30,9 @@ const tmpFile = ".tmp-config.json";
 fs.writeFileSync(tmpFile, JSON.stringify({ style: opts.style }));
 
 try {
-  execFileSync("npx", [
-    "wrangler", "kv:key", "put",
-    "--binding=CONFIG",
-    `domain:${opts.domain}`,
-    `--path=${tmpFile}`,
-  ], { stdio: "inherit" });
+  execSync(`wrangler kv key put --binding=CONFIG --remote --preview false "domain:${opts.domain}" --path="${tmpFile}"`, {
+    stdio: "inherit",
+  });
   console.log(`Style for "${opts.domain}" set to "${opts.style}".`);
 } catch (error) {
   console.error("Failed to set style:", error);
