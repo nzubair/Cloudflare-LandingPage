@@ -63,7 +63,7 @@ In your `.env` file (for local deploys):
 WORKER_ROUTES=*example.net/*:example.net,*anotherdomain.com/*:anotherdomain.com
 ```
 
-Or as a GitHub Actions secret (see [Deploy via GitHub Actions](#option-b-deploy-via-github-actions)).
+Or as a GitHub Actions repository variable (see [Deploy via GitHub Actions](#option-b-deploy-via-github-actions)).
 
 Each domain must be added to your Cloudflare account with DNS managed by Cloudflare. The wildcard pattern ensures the worker handles all paths and subdomains. When `WORKER_ROUTES` is empty or unset, no routes are added (useful for local dev).
 
@@ -136,14 +136,18 @@ To set it up:
 
 1. **Fork or push** this repository to GitHub
 2. Go to **Settings > Secrets and variables > Actions** in your GitHub repo
-3. Add the following repository secrets:
+3. Add the following **repository secrets** (Settings > Secrets and variables > Actions > Secrets):
    - `CLOUDFLARE_API_TOKEN` -- your API token
    - `CONFIG_KV_NAMESPACE_ID` -- CONFIG namespace ID
    - `CONFIG_KV_PREVIEW_NAMESPACE_ID` -- CONFIG preview namespace ID
    - `IMAGES_KV_NAMESPACE_ID` -- IMAGES namespace ID
    - `IMAGES_KV_PREVIEW_NAMESPACE_ID` -- IMAGES preview namespace ID
+4. Add the following **repository variable** (Settings > Secrets and variables > Actions > Variables):
    - `WORKER_ROUTES` -- (optional) comma-separated route entries, e.g. `*example.net/*:example.net`
-4. Push to `main` -- the workflow generates `wrangler.toml` from secrets and deploys
+
+   > **Why a variable instead of a secret?** Route patterns are not sensitive data, and repository variables are visible and editable in the GitHub UI. This makes it easy to review and update domain routes without having to replace a hidden secret value each time.
+
+5. Push to `main` -- the workflow generates `wrangler.toml` from secrets/variables and deploys
 
 You can also trigger a deploy manually from the **Actions** tab using the "Run workflow" button.
 
