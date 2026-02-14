@@ -71,29 +71,23 @@ export function getBaseCSS(): string {
     }
 
     .github-badge {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 10;
-      background: rgba(0, 0, 0, 0.35);
-      color: #fff;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      padding: 0.4rem 0.75rem;
-      border-radius: 0.375rem;
+      display: inline-block;
+      margin-top: 1.5rem;
+      color: rgba(255, 255, 255, 0.5);
       text-decoration: none;
-      transition: background 0.2s ease;
+      transition: color 0.2s ease;
     }
 
     .github-badge:hover {
-      background: rgba(0, 0, 0, 0.55);
+      color: rgba(255, 255, 255, 0.85);
     }
 
     .github-badge:focus,
     .github-badge:focus-visible {
-      background: rgba(0, 0, 0, 0.55);
+      color: rgba(255, 255, 255, 0.85);
       outline: 2px solid #ffffff;
-      outline-offset: 2px;
+      outline-offset: 4px;
+      border-radius: 2px;
     }
   `;
 }
