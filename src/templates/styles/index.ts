@@ -86,6 +86,13 @@ export function getBaseCSS(): string {
     .github-badge:hover {
       background: rgba(0, 0, 0, 0.55);
     }
+
+    .github-badge:focus,
+    .github-badge:focus-visible {
+      background: rgba(0, 0, 0, 0.55);
+      outline: 2px solid #ffffff;
+      outline-offset: 2px;
+    }
   `;
 }
 
