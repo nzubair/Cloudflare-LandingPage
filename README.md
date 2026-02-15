@@ -13,6 +13,8 @@ A Cloudflare Worker that serves placeholder pages for parked or in-development d
   * [zubair.ws](https://zubair.ws) 
   * [ny-tech.net](https://ny-tech.net) 
 
+Refresh the page to see different backgrounds and quotes. 
+
 ## Features
 
 - Single worker serves unlimited domains via wildcard routing
