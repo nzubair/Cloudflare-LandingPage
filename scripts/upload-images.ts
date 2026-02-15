@@ -9,6 +9,7 @@ program
     "--category <string>",
     "Category for all images: nature, abstract, cityscape"
   )
+  .option("--credit <html>", "Photo credit HTML fragment applied to all images", "")
   .parse();
 
 const opts = program.opts();
@@ -45,13 +46,17 @@ for (const file of files) {
   console.log(`\nUploading: ${file} as ${id}...`);
 
   try {
-    execFileSync("npx", [
+    const args = [
       "ts-node", "scripts/upload-image.ts",
       "--file", filePath,
       "--id", id,
       "--category", opts.category,
       "--description", basename,
-    ], { stdio: "inherit" });
+    ];
+    if (opts.credit) {
+      args.push("--credit", opts.credit);
+    }
+    execFileSync("npx", args, { stdio: "inherit" });
   } catch (error) {
     console.error(`Failed to upload ${file}:`, error);
   }

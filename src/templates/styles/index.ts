@@ -89,6 +89,30 @@ export function getBaseCSS(): string {
       outline-offset: 4px;
       border-radius: 2px;
     }
+
+    .photo-credit {
+      position: fixed;
+      bottom: 0.75rem;
+      right: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.25rem 0.6rem;
+      border-radius: 1rem;
+      z-index: 10;
+    }
+
+    .photo-credit a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: underline;
+      text-decoration-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .photo-credit a:hover {
+      color: #ffffff;
+      text-decoration-color: rgba(255, 255, 255, 0.7);
+    }
   `;
 }
 

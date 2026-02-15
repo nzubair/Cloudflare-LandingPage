@@ -1,6 +1,11 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
 
+// WARNING: This script overwrites the quotes collection with the defaults.
+// Any custom quotes added via add-quote.ts will be lost.
+// Only run this for first-time setup. Use add-quote.ts to manage quotes.
+console.warn("WARNING: This will overwrite the quotes collection with defaults, removing any custom quotes.");
+
 const defaultQuotes = {
   quotes: [
     { text: "The only way to do great work is to love what you do.", author: "Steve Jobs", category: "inspirational" },

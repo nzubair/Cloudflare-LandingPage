@@ -92,13 +92,15 @@ IMAGES_KV_PREVIEW_NAMESPACE_ID=<id from IMAGES --preview>
 
 The `npm run dev` and `npm run deploy` commands automatically generate `wrangler.toml` from these values.
 
-### 3. Initialize default content
+### 3. Initialize default content (one-time only)
 
 ```bash
 npm run setup
 ```
 
 This populates KV with 15 default quotes and an empty image manifest.
+
+> **Warning:** `npm run setup` is intended for first-time initialization only. Re-running it will **overwrite** the quotes collection with the defaults and **replace** the image manifest with an empty one, deleting all image metadata. If you need to reset only one of these, run `npm run init-quotes` or `npm run init-manifest` individually.
 
 ### 4. Upload at least one image
 
@@ -155,7 +157,7 @@ You can also trigger a deploy manually from the **Actions** tab using the "Run w
 
 | Command | Description |
 |---------|-------------|
-| `npm run setup` | Initialize default quotes and empty image manifest |
+| `npm run setup` | **One-time** setup: initialize default quotes and empty image manifest |
 | `npm run upload-image` | Upload a single JPEG image to KV |
 | `npm run upload-images` | Batch upload all JPEGs from a directory |
 | `npm run set-style` | Set style variant for a specific domain |

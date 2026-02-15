@@ -17,6 +17,7 @@ export interface ImageMeta {
   id: string;
   category: ImageCategory;
   description: string;
+  credit?: string;
 }
 
 export interface DomainConfig {

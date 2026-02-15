@@ -12,6 +12,7 @@ program
     "One of: nature, abstract, cityscape"
   )
   .option("--description <text>", "Human-readable description", "")
+  .option("--credit <html>", "Photo credit HTML fragment (e.g. Unsplash attribution)", "")
   .parse();
 
 const opts = program.opts();
@@ -56,11 +57,14 @@ try {
 
   // Update manifest
   const existing = manifest.images.findIndex((i: any) => i.id === opts.id);
-  const meta = {
+  const meta: Record<string, string> = {
     id: opts.id,
     category: opts.category,
     description: opts.description,
   };
+  if (opts.credit) {
+    meta.credit = opts.credit;
+  }
 
   if (existing >= 0) {
     manifest.images[existing] = meta;

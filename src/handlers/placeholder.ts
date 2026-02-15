@@ -18,12 +18,12 @@ export async function handleRequest(
       return new Response("", { status: 204 });
     }
 
-    const [imageBase64, quote] = await Promise.all([
+    const [image, quote] = await Promise.all([
       getRandomImage(env.CONFIG, env.IMAGES),
       getRandomQuote(env.CONFIG),
     ]);
 
-    const html = generateHTML(domain, imageBase64, quote, config.style);
+    const html = generateHTML(domain, image.base64, quote, config.style, image.credit);
 
     return new Response(html, {
       headers: {
