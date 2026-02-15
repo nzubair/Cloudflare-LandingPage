@@ -12,7 +12,8 @@ program
     "One of: nature, abstract, cityscape"
   )
   .option("--description <text>", "Human-readable description", "")
-  .option("--credit <html>", "Photo credit HTML fragment (e.g. Unsplash attribution)", "")
+  .option("--credit <html>", "Photo credit HTML fragment (simple strings only)")
+  .option("--credit-file <path>", "Path to a text file containing the credit HTML (recommended for links with special characters)")
   .parse();
 
 const opts = program.opts();
@@ -62,8 +63,11 @@ try {
     category: opts.category,
     description: opts.description,
   };
-  if (opts.credit) {
-    meta.credit = opts.credit;
+  const credit = opts.creditFile
+    ? fs.readFileSync(opts.creditFile, "utf-8").trim()
+    : opts.credit;
+  if (credit) {
+    meta.credit = credit;
   }
 
   if (existing >= 0) {

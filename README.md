@@ -170,8 +170,15 @@ You can also trigger a deploy manually from the **Actions** tab using the "Run w
 # Upload a single image
 npm run upload-image -- --file ./images/mountain.jpg --id nature-001 --category nature --description "Misty mountain"
 
+# Upload with photo credit (write HTML to a file to avoid shell escaping issues)
+echo 'Photo by <a href="https://unsplash.com/@photographer">Name</a> on <a href="https://unsplash.com">Unsplash</a>' > credit.html
+npm run upload-image -- --file ./images/mountain.jpg --id nature-001 --category nature --description "Misty mountain" --credit-file credit.html
+
 # Batch upload all JPEGs in a directory
 npm run upload-images -- --dir ./images/nature --category nature
+
+# Batch upload with shared photo credit
+npm run upload-images -- --dir ./images/nature --category nature --credit-file credit.html
 
 # Set a domain to use the playful style
 npm run set-style -- --domain example.net --style playful
