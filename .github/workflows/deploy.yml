@@ -3,6 +3,12 @@ name: Deploy
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'wrangler.template.toml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
   workflow_dispatch:
 
 jobs:

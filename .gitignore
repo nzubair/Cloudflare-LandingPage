@@ -5,3 +5,4 @@ images/
 .dev.vars
 .wrangler/
 wrangler.toml
+.claude/
