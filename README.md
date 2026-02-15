@@ -209,6 +209,20 @@ npm run set-style -- --domain example.net --style modern --show-quotes false
 npm run add-quote -- --text "Stay hungry, stay foolish." --author "Steve Jobs" --category inspirational
 ```
 
+## Image Categories
+
+Images are organized by category when uploading. The supported categories are:
+
+- **nature** -- Landscapes, mountains, forests, oceans
+- **abstract** -- Patterns, textures, geometric designs
+- **cityscape** -- Urban scenes, skylines, architecture
+
+Use the `--category` flag when uploading:
+
+```bash
+npm run upload-image -- --file ./images/skyline.jpg --id cityscape-001 --category cityscape --description "City skyline at dusk"
+```
+
 ## Style Variants
 
 - **minimalist** -- Clean serif headings, subtle overlay (default)
