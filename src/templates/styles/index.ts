@@ -54,7 +54,7 @@ export function getBaseCSS(): string {
 
     .quote p {
       font-family: 'Inter', sans-serif;
-      font-size: 1rem;
+      font-size: 0.85rem;
       font-weight: 400;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
       margin-bottom: 0.75rem;
@@ -63,11 +63,12 @@ export function getBaseCSS(): string {
 
     .quote cite {
       font-family: 'Inter', sans-serif;
-      font-size: clamp(0.875rem, 2vw, 1rem);
+      font-size: 0.85rem;
       font-style: normal;
       opacity: 0.85;
       display: block;
       text-align: right;
+      font-style: italic;
     }
 
     .github-badge {
@@ -113,6 +114,10 @@ export function getBaseCSS(): string {
       color: #ffffff;
       text-decoration-color: rgba(255, 255, 255, 0.7);
     }
+    
+    p.sub {
+      font-size: 0.65rem;
+      font-style: italic;
   `;
 }
 
