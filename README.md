@@ -2,6 +2,11 @@
 
 A Cloudflare Worker that serves placeholder pages for parked or in-development domains. Displays the domain name over a random background image with an inspirational quote.
 
+> [!IMPORTANT]
+> This project is primarily implemented using Claude Code (Opus 4.6) and Github Copilot Code Review agent.  There might be some outstanding issues terms of code quality, architecture, user input sanitization, etc.
+> 
+> All code is provided as-is with no guarantees. Please review the code, which is not extensive, before you deploy to your Cloudflare account. 
+
 ## Features
 
 - Single worker serves unlimited domains via wildcard routing
