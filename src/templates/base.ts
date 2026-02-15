@@ -37,6 +37,7 @@ export function generateHTML(
   <div class="overlay"></div>
   <main class="content" aria-label="Placeholder page for ${safeDomain}">
     <h1 class="domain">${safeDomain}</h1>
+    <p class="sub">Probably not going anywhere anytime soon...</p>
     <blockquote class="quote">
       <p>&ldquo;${safeText}&rdquo;</p>
       <cite>&mdash; ${safeAuthor}</cite>
