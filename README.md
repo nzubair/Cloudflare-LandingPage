@@ -7,6 +7,12 @@ A Cloudflare Worker that serves placeholder pages for parked or in-development d
 > 
 > All code is provided as-is with no guarantees. Please review the code, which is not extensive, before you deploy to your Cloudflare account. 
 
+## See it in Action
+
+  * [zubairs.net](https://zubairs.net)
+  * [zubair.ws](https://zubair.ws) 
+  * [ny-tech.net](https://ny-tech.net) 
+
 ## Features
 
 - Single worker serves unlimited domains via wildcard routing
