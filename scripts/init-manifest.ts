@@ -1,5 +1,10 @@
 import { execSync } from "child_process";
 
+// WARNING: This script overwrites the image manifest with an empty one.
+// All existing image metadata (IDs, categories, credits) will be lost.
+// Only run this for first-time setup. Use upload-image.ts to manage images.
+console.warn("WARNING: This will overwrite the image manifest with an empty one, removing all existing image metadata.");
+
 const emptyManifest = { images: [] };
 const json = JSON.stringify(emptyManifest);
 

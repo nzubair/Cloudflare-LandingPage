@@ -30,18 +30,18 @@ export async function getImageManifest(
 export async function getRandomImage(
   configKv: KVNamespace,
   imagesKv: KVNamespace
-): Promise<string> {
+): Promise<{ base64: string; credit: string }> {
   const manifest = await getImageManifest(configKv);
 
   if (manifest.images.length === 0) {
-    return "";
+    return { base64: "", credit: "" };
   }
 
   const meta = randomElement(manifest.images);
-  if (!meta) return "";
+  if (!meta) return { base64: "", credit: "" };
   const base64 = await imagesKv.get(`image:${meta.id}`);
 
-  return base64 ?? "";
+  return { base64: base64 ?? "", credit: meta.credit ?? "" };
 }
 
 export async function uploadImage(
