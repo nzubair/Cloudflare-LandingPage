@@ -160,7 +160,7 @@ You can also trigger a deploy manually from the **Actions** tab using the "Run w
 | `npm run setup` | **One-time** setup: initialize default quotes and empty image manifest |
 | `npm run upload-image` | Upload a single JPEG image to KV |
 | `npm run upload-images` | Batch upload all JPEGs from a directory |
-| `npm run set-style` | Set style variant for a specific domain |
+| `npm run set-style` | Set style variant and/or toggle quotes for a domain |
 | `npm run add-quote` | Add a quote to the collection |
 | `npm run list-images` | List all images stored in the manifest |
 
@@ -182,6 +182,15 @@ npm run upload-images -- --dir ./images/nature --category nature --credit-file c
 
 # Set a domain to use the playful style
 npm run set-style -- --domain example.net --style playful
+
+# Disable quotes on a domain (show only the domain name over the background)
+npm run set-style -- --domain example.net --show-quotes false
+
+# Re-enable quotes
+npm run set-style -- --domain example.net --show-quotes true
+
+# Set style and disable quotes in one command
+npm run set-style -- --domain example.net --style modern --show-quotes false
 
 # Add a custom quote
 npm run add-quote -- --text "Stay hungry, stay foolish." --author "Steve Jobs" --category inspirational

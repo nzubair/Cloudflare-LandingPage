@@ -3,6 +3,7 @@ import { DomainConfig, StyleVariant } from "../types";
 const DEFAULT_CONFIG: DomainConfig = {
   style: "minimalist",
   enabled: true,
+  showQuotes: true,
 };
 
 const VALID_STYLES: StyleVariant[] = ["minimalist", "modern", "playful"];
@@ -30,6 +31,10 @@ export async function getDomainConfig(
 
     if (typeof parsed.enabled !== "boolean") {
       parsed.enabled = true;
+    }
+
+    if (typeof parsed.showQuotes !== "boolean") {
+      parsed.showQuotes = true;
     }
 
     return parsed;

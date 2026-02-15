@@ -23,7 +23,7 @@ export async function handleRequest(
       getRandomQuote(env.CONFIG),
     ]);
 
-    const html = generateHTML(domain, image.base64, quote, config.style, image.credit);
+    const html = generateHTML(domain, image.base64, quote, config.style, image.credit, config.showQuotes);
 
     return new Response(html, {
       headers: {
