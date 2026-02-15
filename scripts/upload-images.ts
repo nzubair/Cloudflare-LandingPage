@@ -9,7 +9,8 @@ program
     "--category <string>",
     "Category for all images: nature, abstract, cityscape"
   )
-  .option("--credit <html>", "Photo credit HTML fragment applied to all images", "")
+  .option("--credit <html>", "Photo credit HTML fragment (simple strings only)")
+  .option("--credit-file <path>", "Path to a text file containing the credit HTML (recommended for links with special characters)")
   .parse();
 
 const opts = program.opts();
@@ -53,7 +54,9 @@ for (const file of files) {
       "--category", opts.category,
       "--description", basename,
     ];
-    if (opts.credit) {
+    if (opts.creditFile) {
+      args.push("--credit-file", opts.creditFile);
+    } else if (opts.credit) {
       args.push("--credit", opts.credit);
     }
     execFileSync("npx", args, { stdio: "inherit" });
