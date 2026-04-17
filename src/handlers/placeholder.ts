@@ -6,7 +6,8 @@ import { generateHTML } from "../templates/base";
 
 export async function handleRequest(
   request: Request,
-  env: Env
+  env: Env,
+  ctx: ExecutionContext
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -18,6 +19,17 @@ export async function handleRequest(
       return new Response("", { status: 204 });
     }
 
+    const isGet = request.method === "GET";
+    const cache = caches.default;
+    const cacheKey = new Request(url.toString(), { method: "GET" });
+
+    if (isGet) {
+      const cached = await cache.match(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    }
+
     const [image, quote] = await Promise.all([
       getRandomImage(env.CONFIG, env.IMAGES),
       getRandomQuote(env.CONFIG),
@@ -25,12 +37,18 @@ export async function handleRequest(
 
     const html = generateHTML(domain, image.base64, quote, config.style, image.credit, config.showQuotes);
 
-    return new Response(html, {
+    const response = new Response(html, {
       headers: {
         "Content-Type": "text/html;charset=UTF-8",
         "Cache-Control": "public, max-age=3600",
       },
     });
+
+    if (isGet) {
+      ctx.waitUntil(cache.put(cacheKey, response.clone()));
+    }
+
+    return response;
   } catch (error) {
     console.error("Error handling request:", error);
     const errorHtml = `<!DOCTYPE html>
