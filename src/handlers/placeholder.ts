@@ -6,11 +6,20 @@ import { generateHTML } from "../templates/base";
 
 export async function handleRequest(
   request: Request,
-  env: Env
+  env: Env,
+  ctx: ExecutionContext
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
     const domain = url.hostname;
+
+    const cache = caches.default;
+    const cacheKey = new Request(url.toString(), { method: "GET" });
+
+    const cached = await cache.match(cacheKey);
+    if (cached) {
+      return cached;
+    }
 
     const config = await getDomainConfig(env.CONFIG, domain);
 
@@ -25,12 +34,16 @@ export async function handleRequest(
 
     const html = generateHTML(domain, image.base64, quote, config.style, image.credit, config.showQuotes);
 
-    return new Response(html, {
+    const response = new Response(html, {
       headers: {
         "Content-Type": "text/html;charset=UTF-8",
         "Cache-Control": "public, max-age=3600",
       },
     });
+
+    ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+    return response;
   } catch (error) {
     console.error("Error handling request:", error);
     const errorHtml = `<!DOCTYPE html>
