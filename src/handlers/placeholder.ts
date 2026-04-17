@@ -13,18 +13,21 @@ export async function handleRequest(
     const url = new URL(request.url);
     const domain = url.hostname;
 
-    const cache = caches.default;
-    const cacheKey = new Request(url.toString(), { method: "GET" });
-
-    const cached = await cache.match(cacheKey);
-    if (cached) {
-      return cached;
-    }
-
     const config = await getDomainConfig(env.CONFIG, domain);
 
     if (config.enabled === false) {
       return new Response("", { status: 204 });
+    }
+
+    const isGet = request.method === "GET";
+    const cache = caches.default;
+    const cacheKey = new Request(url.toString(), { method: "GET" });
+
+    if (isGet) {
+      const cached = await cache.match(cacheKey);
+      if (cached) {
+        return cached;
+      }
     }
 
     const [image, quote] = await Promise.all([
@@ -41,7 +44,9 @@ export async function handleRequest(
       },
     });
 
-    ctx.waitUntil(cache.put(cacheKey, response.clone()));
+    if (isGet) {
+      ctx.waitUntil(cache.put(cacheKey, response.clone()));
+    }
 
     return response;
   } catch (error) {
